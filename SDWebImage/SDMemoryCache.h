@@ -70,8 +70,6 @@
 /**
  A memory cache which auto purge the cache on memory warning and support weak cache.
  */
-@interface SDMemoryCache <KeyType, ObjectType> : NSCache <KeyType, ObjectType> <SDMemoryCache>
-
-@property (nonatomic, strong, nonnull, readonly) SDImageCacheConfig *config;
+@interface SDMemoryCache : NSObject <SDMemoryCache>
 
 @end
