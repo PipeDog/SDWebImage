@@ -109,6 +109,21 @@ static id<SDImageLoader> _defaultImageLoader;
     }
 }
 
+- (NSURL *)sortedQueryItems:(NSURL *)URL {
+    if (URL.query.length == 0) { return URL; }
+    
+    NSURLComponents *components = [NSURLComponents componentsWithString:URL.absoluteString];
+    NSArray<NSURLQueryItem *> *queryItems = components.queryItems;
+    
+    NSArray *sortedArray = [queryItems sortedArrayUsingComparator:^NSComparisonResult(NSURLQueryItem * _Nonnull obj1, NSURLQueryItem * _Nonnull obj2) {
+        return [obj1.name compare:obj2.name options:NSLiteralSearch];
+    }];
+    
+    components.queryItems = sortedArray;
+    return components.URL;
+}
+
+
 - (SDWebImageCombinedOperation *)loadImageWithURL:(NSURL *)url options:(SDWebImageOptions)options progress:(SDImageLoaderProgressBlock)progressBlock completed:(SDInternalCompletionBlock)completedBlock {
     return [self loadImageWithURL:url options:options context:nil progress:progressBlock completed:completedBlock];
 }
@@ -130,8 +145,11 @@ static id<SDImageLoader> _defaultImageLoader;
     // Prevents app crashing on argument type error like sending NSNull instead of NSURL
     if (![url isKindOfClass:NSURL.class]) {
         url = nil;
+    } else {
+        // Format url query.
+        url = [self sortedQueryItems:url];
     }
-
+    
     SDWebImageCombinedOperation *operation = [SDWebImageCombinedOperation new];
     operation.manager = self;
 
