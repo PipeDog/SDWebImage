@@ -283,8 +283,8 @@ static inline dispatch_queue_t SDMemoryCacheGetReleaseQueue(void) {
 - (instancetype)initWithConfig:(SDImageCacheConfig *)config {
     self = [super init];
     if (self) {
-        _costLimit = config.maxMemoryCost;
-        _countLimit = config.maxMemoryCount;
+        _costLimit = config.maxMemoryCost ?: 1024 * 1024 * 50; // Default 50MB
+        _countLimit = config.maxMemoryCount ?: 200; // Default 200 images
         _ageLimit = DBL_MAX;
         _autoTrimInterval = 5.0;
         _shouldRemoveAllObjectsOnMemoryWarning = YES;
